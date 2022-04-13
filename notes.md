@@ -288,9 +288,114 @@ El uso general son el de condicionales y operadores logicos
 - =\<
 - =\>
 
+Cada una tiene sus funciones.
+
 ## Test Suites
 
 Cuando tenemos diferentes tests cases en diferentes archivos de testing, los tests suites nos van a permitir 
 correrlos todos y hacer un gran reporte de todos los tests.
 
+## Interactuar con los Elementos
+
+Para realizar mejores y mas versatiles pruebas vamos a tener que interactuar con los 
+elementos, en general van a ser inputs como botones, entradas de texto u otros. 
+Aunque que tambien podemos ver el comportamiento que puede tener un texto, valores de 
+labels, comportamiento de widgets como dropdowns y otros.
+
+### Interacciones, metodos
+- e.click():
+	Hace un click en el elemento
+- e.send\_keys(text):
+	Envia y simula escribir un texto
+- e.clear()
+	limpia su input
+- e.getattribute(attribute):
+	obtiene el valor del attributo
+- e.is\_ displayed(), enabled(), selected():
+	dice si esta ...
+- e.value\_of\_css\_property(css\_property)
+
+- e.size:
+	tamaño del elemento
+- e.tag\_name:
+	nombre o etiqueta del elemento
+- e.text:
+	texto del elemento
+
+Algunas interacciones requieren que importemos diferentes modulos
+de Selenium y nos pueden dar nuevas formas de interactuar
+
+- Select:
+	Se usa generalmente en elementos dropdown o listas.
+	- all\_selected\_options: Opciones seleccionadas
+	- first\_selected...: Primera Opcion
+	- options: Todas las opciones
+
+	- de-select\_by\_index, value, visible\_text():
+		De-Seleciona un elemento
+	- deselect\_all(): Deseleciona todos los elementos
+
+## Manejo de Alerts y PopUps
+
+Se usa en driver el atributo: driver.change\_to.alert, asignadonlo a una variable
+
+- alert.accept(): acepta
+- alert.dissmiss(): cancela
+- send\_keys(value): Simula que escribe 'value', si lo permite
+
+## Navegacion con el Driver
+
+Ademas de entrar a links usando click() en elementos, el mismo driver
+puede hacer una navegacion sencilla usando comandos del navegador como:
+- back(): Ir a la pagina anterior, si se puede
+- forward(): Ir a ... siguiente, si ...
+- refresh(): hacer reaload de la pagina
+
+## Esperas en Selenium
+
+En selenium se pueden hacer diferentes metodos de espera para poder esperar resultados o
+valores que no se puedan obtener por el asincronismo de las paginas, o simplemente esperar
+un tiempo para ver que esta pasando en el test. 
+
+Estos son importantes para no usar otros metodos como sleep que pueden ser malos para 
+los registros de las pruebas.
+
+- driver.implicitly\_wait(seg): espera seg para continuar, no se cuenta en el reporte
+
+Para hacer esperar asyncronas, necesitamos tener una estructura. y importar modulos
+
+El primer WebDriverWait(driver, seg), va a hacer esperar el driver los seg, le podemos poner 
+el .unitl para que espere a una condicion,
+
+siendo esta el segundo expected\_conditions, nos permite mirar una serie de condiciones para 
+que en el momento que sean True, se termine la espera del driver, estas condiciones tienen 
+que ser aplicadas a diferentes elementos
+
+Generalmente se abrebia usando 'as EC'
+
+Los elementos van a tener que ser seleccionados usando dos valores dentro de ():
+- Como se va a obtener By.NAME ID TAG ...
+- Y el valor a obtener ""
+Esta () se pasa a la expected\_condition
+
+Lista de condiciones de EC:
+- element\_to\_be\_clickable(): Si se le puede hacer click mientras sea visible
+- e...\_selected(): Si ... seleccionar
+- invisibility_of_element_located() Si el elemento no es visible o no esta en el DOM
+- presence_of_all_elements_located(): Si uno de los elementos en la lista esta presente en el DOM
+- presence_of_elelement...(): Si el elemento esta presente en el DOM
+- text_to_be_present_in_element(): Si el elemento cuenta con un texto
+- title_contains():
+- title_is():
+- visibility_of_element(): en el Dom, visible, width y height > 0
+- visibility..._located(): lo mismo pero se debe indicar el elemento
+
+Podemos crear nuestras propias condicionales, principalmente de valores de 
+css. Usando de clases con metodos __call__(), los cuales van a ser pasados 
+en vez del EC. 
+
+Generalmente reciben el Locator o el elemento como tal y parametros de 
+la condicional que necesitemos, usando los atributos del elemento 
+podemos mirar si la condicional es verdadera. Si es verdadera vamos a 
+tener que hacer return del elemento y si no False.
 
