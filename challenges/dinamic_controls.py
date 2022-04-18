@@ -1,0 +1,53 @@
+#!/usr/bin/python
+
+import unittest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+class ControlsTests (unittest.TestCase):
+    def setUp (self):
+        self.options = webdriver.ChromeOptions()
+        self.options.binary_location = '/usr/bin/brave'
+        self.driver = webdriver.Chrome(executable_path='/home/bl4ky113/bin/chromedriver', options=self.options)
+        self.driver.maximize_window()
+
+        self.driver.get("https://the-internet.herokuapp.com/dynamic_controls")
+
+    def test_checkbox_textinput (self):
+        checkbox_btn = self.driver.find_element_by_xpath('//*[@id="checkbox-example"]/button')
+
+        self.assertTrue(checkbox_btn.is_enabled())
+        checkbox_btn.click()
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@id="checkbox-example"]/button'))
+        )
+        self.assertEqual(checkbox_btn.text, "Add")
+        checkbox_btn.click()
+        checkbox = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.ID, 'checkbox'))
+        )
+        checkbox.click()
+
+        textinput = self.driver.find_element_by_xpath('//*[@id="input-example"]/input')
+        textinput_btn = self.driver.find_element_by_xpath('//*[@id="input-example"]/button')
+
+        self.assertFalse(textinput.is_enabled())
+        textinput_btn.click()
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@id="input-example"]/input'))
+        )
+        self.assertTrue(textinput.is_enabled())
+        textinput.send_keys('Hello World!!!')
+        textinput_btn.click()
+        WebDriverWait(self.driver, 10).until(
+            lambda driver: not textinput.is_enabled()
+        )
+        self.assertFalse(textinput.is_enabled())
+
+    def tearDown (self):
+        self.driver.quit()
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

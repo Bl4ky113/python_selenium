@@ -201,7 +201,7 @@ Vamos a definir 3 metodos iniciales,
 	y agregarlo al driver. Tambien se puede configurar para que sea incognito o sin header
 - test\_hello\_world:
 	Vamos a decirle al driver que abra una pagina web, brave.com
-	Es importante que se nombre el metodo test_ nombre del metodo, 
+	Es importante que se nombre el metodo test\_ nombre del metodo, 
 	sin esto no va a funcionar. Al tener estos nombres van a ser 
 	ejecutados sin necesidad de escribirlo en el codigo, y se realizara 
 	todo el proceso de test.
@@ -228,12 +228,12 @@ class Clase:
 	atributo = ""
 
 	def metodo (self):
-		self.atributo_metodo = ""
+		self.atributo\_metodo = ""
 
 	@classmethod
-	def class_method (cls):
+	def class\_method (cls):
 		print(cls.atributo) # Sin error
-		print(cls.atributo_metodo) # AtributeError
+		print(cls.atributo\_metodo) # AtributeError
 
 ## Find Elements
 
@@ -381,21 +381,31 @@ Esta () se pasa a la expected\_condition
 Lista de condiciones de EC:
 - element\_to\_be\_clickable(): Si se le puede hacer click mientras sea visible
 - e...\_selected(): Si ... seleccionar
-- invisibility_of_element_located() Si el elemento no es visible o no esta en el DOM
-- presence_of_all_elements_located(): Si uno de los elementos en la lista esta presente en el DOM
-- presence_of_elelement...(): Si el elemento esta presente en el DOM
-- text_to_be_present_in_element(): Si el elemento cuenta con un texto
-- title_contains():
-- title_is():
-- visibility_of_element(): en el Dom, visible, width y height > 0
-- visibility..._located(): lo mismo pero se debe indicar el elemento
+- invisibility\_of\_element\_located() Si el elemento no es visible o no esta en el DOM
+- presence\_of\_all\_elements\_located(): Si uno de los elementos en la lista esta presente en el DOM
+- presence\_of\_elelement...(): Si el elemento esta presente en el DOM
+- text\_to\_be\_present\_in\_element(): Si el elemento cuenta con un texto
+- title\_contains():
+- title\_is():
+- visibility\_of\_element(): en el Dom, visible, width y height > 0
+- visibility...\_located(): lo mismo pero se debe indicar el elemento
 
 Podemos crear nuestras propias condicionales, principalmente de valores de 
-css. Usando de clases con metodos __call__(), los cuales van a ser pasados 
+css. Usando de clases con metodos \_\_call\_\_(), los cuales van a ser pasados 
 en vez del EC. 
 
 Generalmente reciben el Locator o el elemento como tal y parametros de 
 la condicional que necesitemos, usando los atributos del elemento 
 podemos mirar si la condicional es verdadera. Si es verdadera vamos a 
 tener que hacer return del elemento y si no False.
+
+## Data Driven Testing
+
+Es una metodologia para hacer software de pruebas, no se debe confundir con TDD. 
+Su principal caracteristica es hacer pruebas que se van a usar en software ya escrito, 
+probando si este cumple con los requisitos y salidas necesarias.
+
+La diferencia es que TDD se hace software apartir de los tests y sus resultados. Mientras que 
+en DDT se hacen los tests apartir del software para ver si cumple con los resultados esperados.
+
 
