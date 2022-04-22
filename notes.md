@@ -408,4 +408,42 @@ probando si este cumple con los requisitos y salidas necesarias.
 La diferencia es que TDD se hace software apartir de los tests y sus resultados. Mientras que 
 en DDT se hacen los tests apartir del software para ver si cumple con los resultados esperados.
 
+Para usar el DDT vamos a tener que usar la plantilla sencilla de testing y agregarle decoradores 
+que vienen con el modulo de DDT. 
 
+Para que todo funcione vamos a tener que usar @ddt en la clase para que pueda usar los 
+otros decoradores
+
+@data (('datos', datos), (), ()) Son los datos que va a tener que obtener nuestro test\_... ()
+Vamos a hacer que los identifique usando como parametro los datos de cada tupla.
+
+@unpack nos va a dejar que los (datos, datos) se pasen como parametro a los test\_...()
+
+Podemos usar los datos de un csv para ingresar los datos de una forma mas facil, 
+haciendo una funcion que lea y obtenga las rows del archivo y usando el operador 
+unpack * para pasar los datos a @data
+
+## Page Object Model
+
+Es un patron de diseño usado en testing que nos da varias ventajas al automatizar
+Hace que hagamos nuestros tests enfocados a cada pagina, uno para el login, home, 
+articulo, etc. 
+
+En el caso de login, no hacer un archivo para cada test si no crear un test case grande para 
+hacer todos los casos de testing:
+- registrar un usuario
+- entrar un usuario
+- probar errores al ingresar
+- probar errores al registrar
+- etc.
+
+Para usar POM es mejor trabajar en una carpeta reservada, usar dos archivos, el test y el page.
+
+En Page vamos a crear una clase que nos va a permitir hacer diferentes acciones y metodos en la pagina que 
+nos encontremos, buscar un elemento, usarlo y verificar datos de este.
+Preferible usar @property para hacer los getters y setters mas facilmente.
+Estos methods van a estar enfocados a los usos o acciones que podemos hacer en una pagina del sitio web.
+
+En Test vamos a escribir los tests del test case que vamos a realizar, usando y importando la clase de Page y usarlo 
+como object con sus methods y properties. Generalmente vamos a hacer varios tests en cada test case por eso
+es preferible usar el @classmethod para evitar que se cierre y abra otra vez el navegador con cada test

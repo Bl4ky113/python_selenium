@@ -2,8 +2,9 @@
 
 import unittest
 from selenium import webdriver
+from brave_search_page import BravePage
 
-class Tests (unittest.TestCase):
+class BraveTests (unittest.TestCase):
     @classmethod
     def setUp (cls):
         cls.options = webdriver.ChromeOptions()
@@ -11,8 +12,14 @@ class Tests (unittest.TestCase):
         cls.driver = webdriver.Chrome(executable_path='/home/bl4ky113/bin/chromedriver', options=cls.options)
         cls.driver.maximize_window()
 
-        cls.driver.get("http://demo-store.seleniumacademy.com/")
-    
+    def test_search (self):
+        brave = BravePage(self.driver)
+
+        brave.open()
+        self.assertTrue(brave.is_loaded)
+        brave.search('Hello World')
+        self.assertEqual('Hello World', brave.keyword)
+
     @classmethod
     def tearDown (cls):
         cls.driver.quit()
