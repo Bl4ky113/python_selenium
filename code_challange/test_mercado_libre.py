@@ -1,0 +1,65 @@
+#!/usr/bin/python
+
+import unittest
+from csv import reader as csv_reader
+from ddt import ddt, data, unpack
+from selenium import webdriver
+from mercado_libre_page import MercadoLibrePage
+
+def get_csv_data (csv_url):
+    rows = []
+
+    with open(csv_url, encoding="UTF-8", mode="r") as csv_file:
+        reader = csv_reader(csv_file)
+        next(reader, None)
+
+        for row in reader:
+            rows.append(row)
+
+    return rows
+
+def convert_filters_to_dict (filters_arr, separator=':'):
+    filter_dict = {}
+
+    for value in filters_arr:
+        filter_name, filter_value = value.split(separator)
+
+        filter_dict[filter_name] = filter_value
+
+    return filter_dict
+
+@ddt
+class MercadoLibreTests (unittest.TestCase):
+    @classmethod
+    def setUp (cls):
+        cls.options = webdriver.ChromeOptions()
+        cls.options.binary_location = '/usr/bin/brave'
+        cls.driver = webdriver.Chrome(executable_path='/home/bl4ky113/bin/chromedriver', options=cls.options)
+        cls.driver.maximize_window()
+
+    @data (*get_csv_data('./product_info.csv'))
+    @unpack
+
+    def test_search_elements (self, element, num_elements, *filters):
+        mercadolibre = MercadoLibrePage(self.driver)
+        filter_dict = convert_filters_to_dict(filters)
+
+        mercadolibre.open_contry_page()
+        mercadolibre.search_product(element)
+        
+        for filter_name, filter_value in filter_dict.items():
+            if filter_name == "Orden":
+                mercadolibre.filter_by(filter_value)
+            else:
+                mercadolibre.add_filter(filter_name, filter_value)
+
+        product_list = mercadolibre.get_product_list(int(num_elements))
+
+        print(*product_list)
+
+    @classmethod
+    def tearDown (cls):
+        cls.driver.quit()
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

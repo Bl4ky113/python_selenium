@@ -383,7 +383,7 @@ Lista de condiciones de EC:
 - e...\_selected(): Si ... seleccionar
 - invisibility\_of\_element\_located() Si el elemento no es visible o no esta en el DOM
 - presence\_of\_all\_elements\_located(): Si uno de los elementos en la lista esta presente en el DOM
-- presence\_of\_elelement...(): Si el elemento esta presente en el DOM
+- presence\_of\_element...(): Si el elemento esta presente en el DOM
 - text\_to\_be\_present\_in\_element(): Si el elemento cuenta con un texto
 - title\_contains():
 - title\_is():
@@ -447,3 +447,16 @@ Estos methods van a estar enfocados a los usos o acciones que podemos hacer en u
 En Test vamos a escribir los tests del test case que vamos a realizar, usando y importando la clase de Page y usarlo 
 como object con sus methods y properties. Generalmente vamos a hacer varios tests en cada test case por eso
 es preferible usar el @classmethod para evitar que se cierre y abra otra vez el navegador con cada test
+
+# Prueba Tecnica
+
+- Entrar a mercadolibre.com
+- Ir a Colombia
+- Buscar Xbox One S
+- Filtrar los resultados por Nuevo, en Bogotá, de mayor a menor precio
+- Obtener el nombre de los 5 primeros elementos 
+
+Aunque me va a costar la cordura, lo voy a usar usando DDT y POM. Y quien sabe, aprovechando que tengo ayuda del 
+.csv pueda meter varios elementos y filtros.
+
+
