@@ -1,0 +1,183 @@
+#!/usr/bin/python
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+class MercadoLibrePage (object):
+    def __init__ (self, driver):
+        self._driver = driver
+        self._url = "https://mercadolibre.com/"
+        self._country_name = "Colombia"
+        self._country_code = "co"
+        self.search_locator = 'as_word'
+
+    @property
+    def is_in_country_page (self):
+        return f".com.{self._country_code}" in self._driver.current_url
+
+    @property
+    def _len_special_filters (self):
+        if not self.is_in_country_page:
+            return None
+
+        WebDriverWait(self._driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="root-app"]/div/div/aside/div[3]/div[1]/ul/li/section')
+            )
+        )
+
+        len_special_filters = len(self._driver.find_elements_by_xpath(
+            '//*[@id="root-app"]/div/div/aside/div[3]/div/ul/li/section'
+        ))
+
+        return len_special_filters
+
+    @property
+    def _available_filters (self):
+        if not self.is_in_country_page:
+            return None
+
+        WebDriverWait(self._driver, 10).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, '//*[@id="root-app"]/div/div/aside/div[3]/div[5]/ul/li[1]/form/button')
+            )
+        )
+
+        filter_titles = self._driver.find_elements_by_xpath(
+            '//*[@id="root-app"]/div/div/aside/div[3]/div/div'
+        )
+
+        return filter_titles
+
+    def _open_url (self):
+        self._driver.get(self._url)
+
+    def _get_filter_options (self, filter_index):
+        if not self.is_in_country_page:
+            return None
+
+        filter_options_names = self._driver.find_elements_by_xpath(
+            f'//*[@id="root-app"]/div/div/aside/div[3]/div[{filter_index}]/ul/li/form/button/span[1]'
+        )
+        filter_options_btn = self._driver.find_elements_by_xpath(
+            f'//*[@id="root-app"]/div/div/aside/div[3]/div[{filter_index}]/ul/li/form/button'
+        )
+
+        filter_options = {
+            filter_options_names[i].text: filter_options_btn[i]
+            for i in range(len(filter_options_names))
+        }
+
+        return filter_options
+
+    def _get_order_options (self):
+        WebDriverWait(self._driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="root-app"]/div/div/section/div[1]/div/div/div/div[2]/div/div/div/ul')
+            )
+        )
+
+        filter_options_names = self._driver.find_elements_by_xpath(
+            '//*[@id="root-app"]/div/div/section/div[1]/div/div/div/div[2]/div/div/div/ul/a/div[1]/span'
+        )
+        filter_options_obj = self._driver.find_elements_by_xpath(
+            '//*[@id="root-app"]/div/div/section/div[1]/div/div/div/div[2]/div/div/div/ul/a'
+        )
+
+        filter_options = {
+            filter_options_names[i].text: filter_options_obj[i]
+            for i in range(len(filter_options_names))
+        }
+
+        return filter_options
+
+    def _open_order_by_dropdown (self):
+        if not self.is_in_country_page:
+            return None
+
+        filter_by_input = self._driver.find_element_by_xpath(
+            '//*[@id="root-app"]/div/div/section/div[1]/div/div/div/div[2]/div/div/button'
+        )
+        self._js_click(filter_by_input)
+
+    def _get_product_info (self, product, product_index):
+        product_info = {}
+        product_info["name"] = self._driver.find_element_by_xpath(
+            f'//*[@id="root-app"]/div/div/section/ol/li[{product_index}]/div/div/div[2]/div[1]/a[1]/h2'
+        ).text
+        product_info["value"] = self._driver.find_element_by_xpath(
+            f'//*[@id="root-app"]/div/div/section/ol/li[{product_index}]/div/div/div[2]/div[2]/div[1]/div[1]/div/div/div/span[1]/span[2]/span[2]'
+        ).text
+
+        return product_info
+
+    def _get_products (self, size_of_the_list):
+        product_list = []
+        product_index = 1
+
+        while len(product_list) <= size_of_the_list:
+            product = self._driver.find_element_by_xpath(
+                f'//*[@id="root-app"]/div/div/section/ol/li[{product_index}]'
+            )
+            product_info = self._get_product_info(product)
+
+            product_list.append(product_info)
+            product_index += 1
+
+        return product_list
+
+    def _js_click(self, element):
+        self._driver.execute_script('arguments[0].click()', element)
+
+    def open_contry_page (self):
+        self._open_url()
+
+        WebDriverWait(self._driver, 10).until(
+            EC.presence_of_element_located(
+                (By.ID, self._country_code.upper())
+            )
+        )
+
+        self._driver.find_element_by_id(self._country_code.upper()).click()
+
+        return self.is_in_country_page
+
+    def search_product (self, product_keyword):
+        if not self.is_in_country_page:
+            return None
+
+        search_input = self._driver.find_element_by_name(self.search_locator)
+        search_input.send_keys(product_keyword)
+        search_input.submit()
+
+    def add_filter (self, name, value):
+        if not self.is_in_country_page:
+            return None
+
+        filter_index = 1 + self._len_special_filters
+        for filter_ in self._available_filters:
+            if filter_.text == name:
+                filter_options = self._get_filter_options(filter_index)
+                self._js_click(filter_options[value])
+                break
+
+            filter_index += 1
+
+    def filter_by (self, order):
+        if not self.is_in_country_page:
+            return None
+
+        self._open_order_by_dropdown()
+        filter_options = self._get_order_options()
+
+        self._js_click(filter_options[order])
+
+    def get_product_list (self, number_of_elements):
+        if not self.is_in_country_page:
+            return None
+
+        product_list = self._get_products(number_of_elements)
+
+        return product_list

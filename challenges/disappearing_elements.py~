@@ -1,0 +1,40 @@
+#!/usr/bin/python
+
+import unittest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+class Tests (unittest.TestCase):
+    def setUp (self):
+        self.options = webdriver.ChromeOptions()
+        self.options.binary_location = '/usr/bin/brave'
+        self.driver = webdriver.Chrome(executable_path='/home/bl4ky113/bin/chromedriver', options=self.options)
+        self.driver.maximize_window()
+
+        self.driver.get("https://the-internet.herokuapp.com/disappearing_elements")
+
+    def test_get_gallery_btn (self):
+        tries = 0
+
+        while True:
+            try:
+                gallery_btn = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//*[@id="content"]/div/ul/li[5]/a')
+                    )
+                )
+
+                break
+            except:
+                self.driver.refresh()
+                tries += 1
+
+        print("tries: ", tries)
+
+    def tearDown (self):
+        self.driver.quit()
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
